@@ -77,7 +77,7 @@ public class TestUniquelyNamedPersons {
 
 
 
-    private List<String> deriveUniqueNames(PersonWarehouse warehouse) {
+    private List<String>  deriveUniqueNames(PersonWarehouse warehouse) {
         // derive unique names
         List<String> expectedList = new ArrayList<>();
         for (Person person : warehouse) {
