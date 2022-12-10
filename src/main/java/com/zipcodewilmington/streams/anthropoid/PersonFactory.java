@@ -49,7 +49,8 @@ public final class PersonFactory {
      * @return - Array of Person objects
      */ // TODO
     public Person[] createPersonArray(int arrayLength) {
-        return createPersonStream(arrayLength).toArray(size -> new Person[arrayLength]);
+        return createPersonStream(arrayLength).toArray(Person[]::new);
+//        return createPersonStream(arrayLength).toArray( array -> new Person[arrayLength]);
     }
 
 

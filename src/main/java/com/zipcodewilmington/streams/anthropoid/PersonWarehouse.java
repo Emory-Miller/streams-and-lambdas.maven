@@ -44,7 +44,9 @@ public final class PersonWarehouse implements Iterable<Person> {
      * @return list of uniquely named Person objects
      */ //TODO
     public Stream<Person> getUniquelyNamedPeople() {
-        return people.stream().filter(distinctByKey(Person::getName));
+        Set<String> nameSet = new HashSet<>();
+        return people.stream().filter( (Person p) -> nameSet.add(p.getName()));
+//        return people.stream().filter(distinctByKey(Person::getName));
     }
 
 
@@ -53,7 +55,7 @@ public final class PersonWarehouse implements Iterable<Person> {
      * @return a Stream of respective
      */ //TODO
     public Stream<Person> getUniquelyNamedPeopleStartingWith(Character character) {
-        return people.stream().filter((Person p) -> p.getName().charAt(0) == (character) );
+        return people.stream().filter((Person p) -> p.getName().charAt(0) == (character));
     }
 
     /**
@@ -68,7 +70,10 @@ public final class PersonWarehouse implements Iterable<Person> {
      * @return a mapping of Person Id to the respective Person name
      */ // TODO
     public Map<Long, String> getIdToNameMap() {
-        return null;
+        return people.stream().collect(Collectors.toMap(
+                Person::getPersonalId,
+                Person::getName
+        ));
     }
 
 
@@ -76,7 +81,7 @@ public final class PersonWarehouse implements Iterable<Person> {
      * @return Stream of Stream of Aliases
      */ // TODO
     public Stream<Stream<String>> getNestedAliases() {
-        return null;
+        return people.stream().map(person -> Stream.of(person.getAliases()));
     }
 
 
@@ -84,7 +89,7 @@ public final class PersonWarehouse implements Iterable<Person> {
      * @return Stream of all Aliases
      */ // TODO
     public Stream<String> getAllAliases() {
-        return null;
+        return null; //people.stream().map(Person::getAliases).forEach();
     }
 
     // DO NOT MODIFY
@@ -107,6 +112,10 @@ public final class PersonWarehouse implements Iterable<Person> {
         return people.iterator();
     }
 
+    // Found on Stack Overflow. This method is a stateful filter. It will maintain state about what
+    // it has seen previously, and return whether an element was seen for the first time. It will
+    // preserve an arbitrary element from duplicate entries, NOT the first one.
+    // @see https://stackoverflow.com/questions/23699371/java-8-distinct-by-property
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor){
         Set<Object> seen = ConcurrentHashMap.newKeySet();
         return t -> seen.add(keyExtractor.apply(t));
